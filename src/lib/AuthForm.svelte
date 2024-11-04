@@ -8,8 +8,8 @@
   let { isRegistration, form }: ComponentProps = $props();
 </script>
 
-<div class="p-4 mx-auto max-w-md bg-zinc-100 rounded-md shadow-sm">
-  <h1 class="my-10 text-center text-5xl font-bold">
+<div class="p-4 max-w-md bg-zinc-50 rounded-md shadow-lg">
+  <h1 class="my-10 text-center text-5xl">
     {isRegistration ? "Register" : "Login"}
   </h1>
   {#if !form?.success}
