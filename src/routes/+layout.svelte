@@ -16,7 +16,7 @@
 
 		return () => data.subscription.unsubscribe();
 	});
-	//$inspect(session)
+	$inspect(session)
 
 
 	const NavItems = [

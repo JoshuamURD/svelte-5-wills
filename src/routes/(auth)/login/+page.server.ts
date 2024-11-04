@@ -1,14 +1,11 @@
-import type { Actions } from "./$types";
-import { createClient } from "@supabase/supabase-js";
-import {
-  PUBLIC_SUPABASE_ANON_KEY,
-  PUBLIC_SUPABASE_URL,
-} from "$env/static/public";
 import { fail, redirect } from "@sveltejs/kit";
 
 interface ReturnObject {
   success: boolean;
   errors: string[];
+  email: string;
+  password: string;
+  confirmPassword?: never;
 }
 
 export const actions = {
@@ -21,25 +18,27 @@ export const actions = {
     const returnObject: ReturnObject = {
       success: true,
       errors: [],
+      email: email,
+      password: password,
     };
 
     //validation
     if (!email || !password) {
       returnObject.success = false;
+      returnObject.errors.push("Email and password are required");
       return returnObject;
     }
 
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-    //Handle errors
     if (error || !data.user) {
-      console.log("there has been an error.", error);
       returnObject.success = false;
+      returnObject.errors.push("Incorrect email or password");
       return fail(400, returnObject as any);
     }
-
     redirect(303, "/wills");
-
-    return returnObject;
   },
 };

@@ -1,14 +1,11 @@
-import type { Actions } from "./$types";
-import { createClient } from "@supabase/supabase-js";
-import {
-  PUBLIC_SUPABASE_ANON_KEY,
-  PUBLIC_SUPABASE_URL,
-} from "$env/static/public";
 import { fail, redirect } from "@sveltejs/kit";
 
 interface ReturnObject {
   success: boolean;
   errors: string[];
+  email: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export const actions = {
@@ -21,9 +18,12 @@ export const actions = {
     const returnObject: ReturnObject = {
       success: true,
       errors: [],
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
     };
 
-    if (password !== confirmPassword && confirmPassword !== null) {
+    if (password !== confirmPassword) {
       returnObject.errors.push("Passwords do not match");
     }
     if (returnObject.errors.length > 0) {
@@ -33,11 +33,6 @@ export const actions = {
 
     const { data, error } = await supabase.auth.signUp({ email, password });
 
-    if (confirmPassword == null) {
-      console.log("confirmPassword is null");
-      supabase.auth.signInWithPassword({ email, password });
-    }
-
     //Handle errors
     if (error || !data.user) {
       console.log("there has been an error.", error);
@@ -46,7 +41,5 @@ export const actions = {
     }
 
     redirect(303, "/wills");
-
-    return returnObject;
   },
 };
