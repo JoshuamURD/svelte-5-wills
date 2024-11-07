@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { User } from "@supabase/supabase-js";
+  import type { UserState } from "./state/user-state.svelte";
 
   interface NavItem {
     link: string;
@@ -9,13 +10,13 @@
   interface ComponentProps {
     items: NavItem[];
     activePath?: string;
-    user: User | null;
-    logout: () => void;
+    userState: () => UserState;
   }
 
-  let { items, activePath, user, logout }: ComponentProps = $props();
+  let { items, activePath, userState }: ComponentProps = $props();
 
-  console.log("user: ", user);
+  let userContext = userState();
+  let { user } = $derived(userContext);
 </script>
 
 <nav class="mt-4 flex flex-row gap-10 w-full bg-zinc-100 shadow-lg p-10">
@@ -27,8 +28,9 @@
       <a href={item.href} class="hover:text-blue-500 font-bold">{item.link}</a>
     {/each}
     {#if user}
-      <button onclick={logout} class="hover:text-blue-500 font-bold"
-        >Logout</button
+      <button
+        onclick={() => userContext.logout()}
+        class="hover:text-blue-500 font-bold">Logout</button
       >
     {:else}
       <a href="/login" class="hover:text-blue-500 font-bold">Login</a>

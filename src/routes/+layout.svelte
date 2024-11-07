@@ -3,7 +3,7 @@
 	import Header from '$lib/Layout/Header.svelte';
 	import { invalidate } from '$app/navigation';
 	import Nav from '$lib/Nav.svelte';
-	import { setUserState } from '$lib/state/user-state.svelte';
+	import { getUserState, setUserState } from '$lib/state/user-state.svelte';
 
 
 	
@@ -13,6 +13,7 @@
 	
 	//Context
 	let userState = setUserState({session: data.session, supabase: data.supabase, user: data.user});
+	let userContext = getUserState();
 
 	$effect (() => {
 		userState.updateState({session, supabase, user});
@@ -35,7 +36,7 @@
 </script>
 
 <div class="max-w-lg mx-auto">
-	<Nav logout={userState.logout} user={user} items={NavItems} />
+	<Nav userState={getUserState} items={NavItems} />
 	<Header/>
 	{@render children()}
 </div>
